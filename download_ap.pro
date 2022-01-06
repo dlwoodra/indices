@@ -80,7 +80,7 @@ function convert_little_ap_to_dailyap, little_ap
   ; find the unique days to be used in calculating the average
   uniqdays = little_ap[ uniq( little_ap.yyyymmdd ) ].yyyymmdd
   apmean = fltarr(n_elements( uniqdays )) ; should be only unique days
-  ;apstar = apmean ; defined in https://www.ngdc.noaa.gov/stp/GEOMAG/ApStardescription.pdf
+  apstar = apmean ; defined in https://www.ngdc.noaa.gov/stp/GEOMAG/ApStardescription.pdf
   
   ; for faster where statements, reduce number of elements by
   ; tracking first and last elements found
@@ -96,18 +96,26 @@ function convert_little_ap_to_dailyap, little_ap
      foundidx = idx + first
      apmean[i] = mean(little_ap[foundidx].a, /nan)
 
+     aptemp = fltarr(8)
+     for j=0,7 do begin
+        idxstar = foundidx + (j - 4L)
+        aptemp[j] = mean( little_ap[idxstar].a,/nan )
+     endfor
+     apstar[i] = max(aptemp)
+     
      first = foundidx[-1] + 1L  ;set for next iteration
      ;if i mod 100 eq 0  then print,i,' of ',n_elements(apmean)-1
   endfor
   ;print,'INFO: convert_little_ap_to_dailyap finished'
 
   ; define output
-  ap_rec = {yyyymmdd:0L, jd:0.d, ap:0., apstar:0.}
+  ap_rec = {yyyymmdd:0L, jd:0.d, ap:0., apstar:-1.}
   apdaily = replicate(ap_rec, n_elements(apmean))
 
   ; assign results
   apdaily.yyyymmdd = uniqdays
   apdaily.ap = apmean
+  apdaily.apstar = apstar
   
   ; convert yyyymmdd to jd for convenience
   yyyy = uniqdays/10000L
