@@ -271,12 +271,12 @@ function download_f10, showplot=showplot, write_barrys_file=write_barrys_file
 
   if keyword_set(showplot) then begin
      tmp = label_date(date_format=['%Y'])
-     plot, daily.jd, daily.f10, xtickformat='label_date'
+     plot, daily.jd, daily.f10, xtickformat='label_date',ytit='SFU',tit='F10.7 and <F10.7>81day'
      oplot, daily.jd,daily.f10a, co='fe'x
      stop
      tmp = label_date(date_format=['%D %M!C%Y'])
      plot, daily.jd, daily.f10, xtickformat='label_date', $
-           xr=[-90,0]+daily[-1].jd, ps=-4, ys=1
+           xr=[-90,0]+daily[-1].jd, ps=-4, ys=1,ytit='SFU',tit='F10.7 and <F10.7>81day'
      oplot, daily.jd, daily.f10a, co='fe'x
      
   endif
